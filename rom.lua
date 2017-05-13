@@ -51,7 +51,7 @@ end
 local y = 1
 local function print(t)
 	t = tostring(t)
-	if y = 16 then
+	if y == 16 then
 		bI(g,"copy",1,2,50,15,0,-1)
 		bI(g,"fill",1,16,50,1," ")
 	else
