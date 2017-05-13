@@ -1,4 +1,4 @@
---V3
+--V4
 local component=component
 if not component then
 	component=require("component")
@@ -71,7 +71,7 @@ if gpu and screen then
 	g.setBackground(0)
 	g.setForeground(0xFFFFFF)
 else for i=1,5,1 do b(1500,.1) end end
-local y=0
+local y=1
 local function pr(t)
 	if g then
 		t=tostring(t)
@@ -91,7 +91,7 @@ local function key(t,...)
 	t=uT() + t
 	while t > uT() do
 		local e={computer.pullSignal(t-uT())}
-		if e[1]=="key_down" and k[e[3]] then return e[3] end
+		if e[1]=="key_down" and k[e[4]] then return e[4] end
 	end
 end
 
