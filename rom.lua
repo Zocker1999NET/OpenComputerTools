@@ -2,6 +2,10 @@ local component = component
 if not component then
 	component = require("component")
 end
+local computer = computer
+if not computer then
+	computer = require("computer")
+end
 
 local cT = component.type
 local cL = component.list
