@@ -1,3 +1,4 @@
+--V1
 local component = component
 if not component then
 	component = require("component")
@@ -27,7 +28,7 @@ end
 boot_invoke = bI
 
 local eeprom = cID("eeprom")
-bI(eeprom,"setLabel","EEPROM (Lua Bios with NetBoot)")
+bI(eeprom,"setLabel","Lua Bios with NetBoot")
 computer.getBootAddress = function()
 	local d = bI(eeprom,"getData")
 	if d:len() >= 36 then
@@ -51,27 +52,41 @@ computer.setBootAddress = function(d,public,private)
 	return (d ~= nil and bI(eeprom,"setData",d)) or false
 end
 
+local g
 local screen = cID("screen")
 local gpu = cID("gpu")
 if gpu and screen then
-	bI(gpu, "bind", screen)
-	bI(g,"setResolution",50,16)
+	g = cP(gpu)
+	g.bind(screen)
+	bI(screen,"turnOn")
+	g.setResolution(50,16)
+	g.setBackground(0)
+	g.setForeground(0xFFFFFF)
 end
 local y = 1
 local function print(t)
-	t = tostring(t)
-	if y == 16 then
-		bI(g,"copy",1,2,50,15,0,-1)
-		bI(g,"fill",1,16,50,1," ")
-	else
-		y = y + 1
+	if g then
+		t = tostring(t)
+		if y == 16 then
+			g.copy(1,2,50,15,0,-1)
+			g.fill(1,16,50,1," ")
+		else
+			y = y + 1
+		end
+		g.set(1,y,t)
 	end
-	bI(g,"set",1,y,t)
 end
-
-print("Lua BIOS with NetBoot")
-print("by zocker1999net")
-computer.pullSignal(3)
+local function sl(t)
+	if g then
+		computer.pullSignal(t)
+	end
+end
+------123456789.123456789.123456789.123456789.123456789
+print"Lua BIOS with NetBoot"
+print"by zocker1999net"
+print""
+print"Press [CTRL] for boot menu"
+sl(3)
 
 local function tryLoadFrom(add)
 	local t = cT(add)
