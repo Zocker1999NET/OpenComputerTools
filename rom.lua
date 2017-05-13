@@ -1,4 +1,4 @@
---V5
+--V6
 local component=component
 if not component then
 	component=require("component")
@@ -124,7 +124,7 @@ local function sB()
 		pr"(2) Boot from network"
 		local k=key(10,2,3)
 		if not k then return end
-		li(k==3)
+		rB(k==3)
 	end
 end
 local function rB(n)
@@ -153,7 +153,7 @@ if kb then
 	if key(.5,29) then
 		cls()
 		sB()
-		computer.turnOff()
+		computer.shutdown()
 		return nil
 	end
 end
