@@ -1,4 +1,4 @@
---V7
+--V8
 local component=component
 if not component then
 	component=require("component")
@@ -131,7 +131,7 @@ local function rB(n)
 	if n then
 
 	end
-	tLF(l[k],b,c)
+	tLF(l[k],b,c)()
 end
 local function sB()
 	if g then
