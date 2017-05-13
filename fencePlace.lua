@@ -41,11 +41,15 @@ local function chain()
     place()
 end
 
-for y = 1,16,1 do
+for y = 2,15,1 do
     local side = (math.fmod(y,2)) == 1 -- left/false : true/right
     for i = 1,7,1 do
-        chain()
-        forward(3)
+        if (7 <= y and y <= 10) and (i == 4 or i == 5) then
+            forward(13)
+        else
+            chain()
+            forward(3)
+        end
     end
     chain()
     if side then
