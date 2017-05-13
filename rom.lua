@@ -55,7 +55,7 @@ local function print(t)
 		bI(g,"copy",1,2,50,15,0,-1)
 		bI(g,"fill",1,16,50,1," ")
 	else
-		y += 1
+		y = y + 1
 	end
 	bI(g,"set",1,y,t)
 end
