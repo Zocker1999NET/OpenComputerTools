@@ -1,9 +1,19 @@
 local r = require("robot")
 
-local function select()
+local function sel()
     for i = 1,r.inventorySize(),1 do
         if r.count(i) > 0 then
             r.select(i)
+            return
+        end
+    end
+end
+local function select()
+    if r.count() < 1 then
+        sel()
+        while r.count() < 1 do
+            os.sleep(0.1)
+            sel()
         end
     end
 end
@@ -40,7 +50,7 @@ for y = 1,16,1 do
     chain()
     if side then
         r.turnRight()
-        forward(10)
+        chain()
         r.turnRight()
     else
         r.turnLeft()
