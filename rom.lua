@@ -1,4 +1,4 @@
---V9
+--V10
 local component=component if not component then component=require("component")end
 local computer=computer if not computer then computer=require("computer")end
 local tmp=computer.tmpAddress()local b=computer.beep
@@ -47,17 +47,8 @@ end
 computer.getBootAddress=gBA
 computer.setBootAddress=sBA
 local g
-local screen=cID("screen")
-local gpu=cID("gpu")
-local kb=cID("keyboard")
-if gpu and screen then
-g=cP(gpu)
-g.bind(screen)
-bI(screen,"turnOn")
-g.setResolution(50,16)
-g.setBackground(0)
-g.setForeground(0xFFFFFF)
-else for i=1,5,1 do b(1500,.1)end end
+local screen=cID("screen")local gpu=cID("gpu")
+if gpu and screen then g=cP(gpu)g.bind(screen)bI(screen,"turnOn")g.setResolution(50,16)g.setBackground(0)g.setForeground(0xFFFFFF)else for i=1,5,1 do b(1500,.1)end end
 local y=1
 local function pr(t)
 if g then
@@ -123,7 +114,7 @@ local i=0
 local k={}
 local l={}
 for a in cL(n and "modem" or "filesystem")do
-if bI(a,"exists","/init.lua")then i=i+1 k[i]=i+1 l[i+1]=a pr("("..i..") "..a..bI(a,"getLabel"))end
+if n or bI(a,"exists","/init.lua")then i=i+1 k[i]=i+1 l[i+1]=a pr("("..i..") "..a..bI(a,"getLabel"))end
 end
 if i==0 then error("no bootable medium found",0)end
 k=key(10,table.unpack(k))
@@ -154,7 +145,7 @@ end
 end
 pr"Lua Bios with NetBoot"
 pr"by zocker1999net"
-if kb then
+if cID("keyboard")then
 pr""
 pr"Press [CTRL] for boot menu"
 b(1000,.5)
