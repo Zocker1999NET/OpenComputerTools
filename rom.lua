@@ -1,3 +1,8 @@
+local component = component
+if not component then
+	component = require("component")
+end
+
 local cT = component.type
 local cL = component.list
 local cP = component.proxy
