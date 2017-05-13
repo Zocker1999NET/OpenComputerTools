@@ -1,4 +1,4 @@
---V4
+--V5
 local component=component
 if not component then
 	component=require("component")
@@ -87,7 +87,7 @@ end
 local function cls(s) s=s or 1 if g then g.fill(1,s,50,16," ") y=s end end
 local function key(t,...)
 	local k={}
-	for v in pairs({...}) do k[v]=1 end
+	for _k,v in pairs({...}) do k[v]=1 end
 	t=uT() + t
 	while t > uT() do
 		local e={computer.pullSignal(t-uT())}
