@@ -1,4 +1,4 @@
---V1
+--V2
 local component = component
 if not component then
 	component = require("component")
@@ -7,7 +7,7 @@ local computer = computer
 if not computer then
 	computer = require("computer")
 end
-
+local b = computer.beep
 local cT = component.type
 local cL = component.list
 local cP = component.proxy
@@ -31,23 +31,27 @@ local eeprom = cID("eeprom")
 bI(eeprom,"setLabel","Lua Bios with NetBoot")
 computer.getBootAddress = function()
 	local d = bI(eeprom,"getData")
-	if d:len() >= 36 then
+	if d:len() == 36 then
 		return d:sub(1,36)
+	elseif d:len() > 36 then
+		local p = 38
+		while d:sub(p,p) ~= "|" do
+			p = p + 1
+		end
+		return d:sub(1,36),d:sub(38,p-1),d:sub(p+1)
 	else
 		return nil,"Data corrupted"
 	end
 end
-computer.setBootAddress = function(d,public,private)
-	if d == nil then
+computer.setBootAddress = function(d,pub,pr)
+	if not d then
 		d = ""
 	end
-	d = component.get(d)
-	if d == nil then
+	if not cT(d) then
 		return false
 	end
-	local t = cT(d)
-	if t == "modem" and public and private then
-		d = d..tostring(public)..tostring(private)
+	if cT(d) == "modem" and pub and pr then
+		d = d.."|"..tostring(pub).."|"..tostring(pr)
 	end
 	return (d ~= nil and bI(eeprom,"setData",d)) or false
 end
@@ -62,7 +66,7 @@ if gpu and screen then
 	g.setResolution(50,16)
 	g.setBackground(0)
 	g.setForeground(0xFFFFFF)
-end
+else for i=1,5,1 do b(1500,.1) end end
 local y = 1
 local function print(t)
 	if g then
@@ -76,65 +80,57 @@ local function print(t)
 		g.set(1,y,t)
 	end
 end
-local function sl(t)
-	if g then
-		computer.pullSignal(t)
-	end
-end
 ------123456789.123456789.123456789.123456789.123456789
 print"Lua BIOS with NetBoot"
 print"by zocker1999net"
 print""
 print"Press [CTRL] for boot menu"
-sl(3)
+b(1000,.5)
 
 local function tryLoadFrom(add)
 	local t = cT(add)
 	if t == "filesystem" then
-		local handle, reason = bI(add, "open", "/init.lua")
-		if not handle then
-			return nil, reason
+		local h,r = bI(add, "open", "/init.lua")
+		if not h then
+			return nil, r
 		end
-		local buffer = ""
+		local b = ""
 		repeat
-			local data, reason = bI(add, "read", handle, math.huge)
-			if not data and reason then
-				return nil, reason
+			local d,r = bI(add, "read", h, math.huge)
+			if not d and r then
+				return nil, r
 			end
-			buffer = buffer .. (data or "")
-		until not data
-		bI(add, "close", handle)
-		return load(buffer, "=init")
+			b = b..(d or "")
+		until not d
+		bI(add,"close",h)
+		return load(b,"=init")
 	elseif t == "modem" then
 
 	end
 end
-local init, reason
+local i, r
 if computer.getBootAddress() then
-	init, reason = tryLoadFrom(computer.getBootAddress())
+	i, r = tryLoadFrom(computer.getBootAddress())
 end
-if not init then
+if not i then
 	computer.setBootAddress()
 	for add in component.list("filesystem") do
-		init, reason = tryLoadFrom(add)
-		if init then
+		i, r = tryLoadFrom(add)
+		if i then
 			computer.setBootAddress(add)
 			break
 		end
 	end
 	--[[for add in component.list("modem") do
-		init, reason = tryLoadFrom(add)
-		if init then
+		i, r = tryLoadFrom(add)
+		if i then
 			computer.setBootAddress(add)
 			break
 		end
 	end]]
 end
-if not init then
-	error("no bootable medium found" .. (reason and (": " .. tostring(reason)) or ""), 0)
+if not i then
+	error("no bootable medium found" .. (r and (": " .. tostring(r)) or ""), 0)
 end
-computer.beep(1000, 0.2)
-if g then
-	--g.setResolution(g.maxResolution())
-end
-init()
+b(1000,.2)
+i()
