@@ -1,4 +1,4 @@
---V6
+--V7
 local component=component
 if not component then
 	component=require("component")
@@ -122,7 +122,7 @@ local function rB(n)
 	local k={}
 	local l={}
 	for a in cL(n and "modem" or "filesystem") do
-		if bI(a,"exists","/init.lua") then i=i+1 k[i]=i+1 l[i+1]=a print("("..i..") "..a..bI(a,"getLabel")) end
+		if bI(a,"exists","/init.lua") then i=i+1 k[i]=i+1 l[i+1]=a pr("("..i..") "..a..bI(a,"getLabel")) end
 	end
 	k=key(10,table.unpack(k))
 	if not k then return end
