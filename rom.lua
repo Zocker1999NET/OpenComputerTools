@@ -116,17 +116,6 @@ local function tLF(a,b,c)
 
 	end
 end
-local function sB()
-	if g then
-		pr"Which source do you like to boot from? (10sec)"
-		pr""
-		pr"(1) Boot from local filesystem"
-		pr"(2) Boot from network"
-		local k=key(10,2,3)
-		if not k then return end
-		rB(k==3)
-	end
-end
 local function rB(n)
 	cls(3)
 	local i=0
@@ -143,6 +132,17 @@ local function rB(n)
 
 	end
 	tLF(l[k],b,c)
+end
+local function sB()
+	if g then
+		pr"Which source do you like to boot from? (10sec)"
+		pr""
+		pr"(1) Boot from local filesystem"
+		pr"(2) Boot from network"
+		local k=key(10,2,3)
+		if not k then return end
+		rB(k==3)
+	end
 end
 pr"Lua Bios with NetBoot"
 pr"by zocker1999net"
