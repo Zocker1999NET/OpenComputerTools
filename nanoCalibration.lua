@@ -99,5 +99,5 @@ end
 print("Calibration completed!")
 print("Save data to nanoInfos.txt")
 local f = fs.open("nanoInfos.txt","w")
-f.write(ser.serialize(results))
-f.close()
+f:write(ser.serialize(results))
+f:close()
