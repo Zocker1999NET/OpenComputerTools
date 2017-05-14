@@ -19,7 +19,7 @@ net.open(1)
 local function sendCommand(response,...)
     net.broadcast(1,"nanomachines",...)
     while true do
-        local eD = {event.pull(5,"modem_message",nil,nil,1,nil,"nanomachines",response)}
+        local eD = {ev.pull(5,"modem_message",nil,nil,1,nil,"nanomachines",response)}
         if not eD[1] then
             return nil
         else
