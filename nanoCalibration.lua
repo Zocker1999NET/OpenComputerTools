@@ -38,7 +38,7 @@ local function disableAllInputs()
     for i = 1,mInputs,1 do
         write("#")
         local r = {}
-        while r[1] ~= i or not r[2] do
+        while r[1] ~= i or r[2] do
             r = sendCommand("input","setInput",i,false)
             if not r then
                 print("Connection lost!")
