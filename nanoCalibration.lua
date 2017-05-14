@@ -7,6 +7,8 @@ end
 local ev = require("event")
 local com = require("component")
 local term = require("term")
+local fs = require("filesystem")
+local ser = require("serialization")
 local net
 for a in com.list("modem") do
     if com.invoke(a,"isWireless") then
@@ -30,6 +32,18 @@ local function sendCommand(response,...)
         end
     end
 end
+local function changeInput(i,b,wait)
+    b = (b and true) or false
+    local r = {}
+    while r[1] ~= i or (r[2] ~= b) do
+        r = sendCommand("input","setInput",i,b)
+        if (not r) and (not wait) then
+            print("Connection lost!")
+            return false
+        end
+    end
+    return true
+end
 
 local userName = ""
 local mInputs = 0
@@ -37,13 +51,8 @@ local function disableAllInputs()
     print("Disable all inputs ...")
     for i = 1,mInputs,1 do
         write("#")
-        local r = {}
-        while r[1] ~= i or r[2] do
-            r = sendCommand("input","setInput",i,false)
-            if not r then
-                print("Connection lost!")
-                return false
-            end
+        if not changeInput(i,false) then
+            return false
         end
     end
     print()
@@ -76,8 +85,19 @@ while true do
 end
 if not doCal then
     print("Calibration abort!")
-    disableAllInputs()
     return
 end
 
 local results = {}
+for i = 1,18,1 do
+    if not changeInput(i,true) then return end
+    local r = sendCommand("effects","getActiveEffects")
+    if not r then print("Connection lost!") print("Wait until effect has been disabled again!") changeInput(i,false,true) return end
+    results[i] = r[1]
+    if not changeInput(i,false) then return end
+end
+print("Calibration completed!")
+print("Save data to nanoInfos.txt")
+local f = fs.open("nanoInfos.txt","w")
+f.write(ser.serialize(results))
+f.close()
