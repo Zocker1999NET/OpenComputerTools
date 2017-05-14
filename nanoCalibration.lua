@@ -1,5 +1,8 @@
+local function write(txt)
+    io.write(tostring(txt or ""))
+end
 local function print(txt)
-    io.write(tostring(txt).."\n")
+    write(tostring(txt or "").."\n")
 end
 local ev = require("event")
 local com = require("component")
@@ -19,7 +22,7 @@ net.open(1)
 local function sendCommand(response,...)
     net.broadcast(1,"nanomachines",...)
     while true do
-        local eD = {ev.pull(5,"modem_message",nil,nil,nil,nil,"nanomachines",response)}
+        local eD = {ev.pull(5,"modem_message",nil,nil,1,nil,"nanomachines",response)}
         if not eD[1] then
             return nil
         else
@@ -33,6 +36,7 @@ local mInputs = 0
 local function disableAllInputs()
     print("Disable all inputs ...")
     for i = 1,mInputs,1 do
+        write("#")
         local r = {}
         while r[1] ~= i or not r[2] do
             r = sendCommand("input","setInput",i,false)
@@ -42,6 +46,7 @@ local function disableAllInputs()
             end
         end
     end
+    print()
     return true
 end
 
