@@ -1,4 +1,4 @@
---11
+--12
 local component=component if not component then component=require("component")end
 local computer=computer if not computer then computer=require("computer")end
 local tmp=computer.tmpAddress()local b=computer.beep
@@ -8,12 +8,11 @@ local cL=component.list
 local cP=component.proxy
 local cI=component.invoke
 local function cID(dT)return cL(dT)()end
-function bI(address,method,...)
-local result=table.pack(pcall(cI,address,method,...))if not result[1] then
+function bI(address,method,...)local result=table.pack(pcall(cI,address,method,...))if not result[1] then
 return nil, result[2]
 else
 return table.unpack(result,2,result.n)end
-end--boot_invoke=bI
+end
 local eeprom=cID("eeprom")bI(eeprom,"setLabel","Lua Bios with NetBoot")local function gBA()local d=bI(eeprom,"getData")if d:len()==36 then
 return d:sub(1,36)elseif d:len()> 36 then
 local p=38
@@ -37,14 +36,10 @@ end
 computer.getBootAddress=gBA
 computer.setBootAddress=sBA
 local g
-local screen=cID("screen")local gpu=cID("gpu")if gpu and screen then g=cP(gpu)g.bind(screen)bI(screen,"turnOn")g.setResolution(50,16)g.setBackground(0)g.setForeground(0xFFFFFF)else for i=1,5,1 do b(1500,.1)end end
+local screen=cID("screen")local gpu=cID("gpu")if gpu and screen then g=cP(gpu)g.bind(screen)cI(screen,"turnOn")g.setResolution(50,16)g.setBackground(0)g.setForeground(0xFFFFFF)else for i=1,5,1 do b(1500,.1)end end
 local y=1
 local function pr(t)if g then
-t=tostring(t)if y==17 then
---g.copy(1,2,50,15,0,-1)--g.fill(1,16,50,1," ")y=y-1
-end
-g.set(1,y,t)y=y+1
-end
+t=tostring(t)g.set(1,y,t)y=math.min(y+1,16)end
 end
 local function cls(s)s=s or 1 if g then g.fill(1,s,50,16," ")y=s end end
 local function key(t,...)local k={}
@@ -130,11 +125,6 @@ i,r=tLF(add)if i then
 sBA(add)break
 end
 end
---[[for add in component.list("modem")do
-i,r=tLF(add)if i then
-sBA(add)break
-end
-end]]
 end
 if not i then
 error("no bootable medium found"..(r and(": "..tostring(r))or""),0)end
