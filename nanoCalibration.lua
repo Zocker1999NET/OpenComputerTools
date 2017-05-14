@@ -19,7 +19,7 @@ net.open(1)
 local function sendCommand(response,...)
     net.broadcast(1,"nanomachines",...)
     while true do
-        local eD = {ev.pull(5,"modem_message",nil,nil,1,nil,"nanomachines",response)}
+        local eD = {ev.pull(5,"modem_message",nil,nil,nil,nil,"nanomachines",response)}
         if not eD[1] then
             return nil
         else
@@ -47,7 +47,7 @@ end
 
 print("Try to connect to nanomachines ...")
 local r = sendCommand("port","setResponsePort",1)
-if (not r) or r[2] ~= 1 then print("No nanomachines found!")return end
+if (not r) or r[1] ~= 1 then print("No nanomachines found!")return end
 r = sendCommand("name","getName")
 if not r then print("Connection lost!") return end
 userName = tostring(r[1])
