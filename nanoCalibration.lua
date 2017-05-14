@@ -98,6 +98,6 @@ for i = 1,18,1 do
 end
 print("Calibration completed!")
 print("Save data to nanoInfos.txt")
-local f = fs.open("nanoInfos.txt","w")
+local f = fs.open("/home/nanoInfos.txt","w")
 f:write(ser.serialize(results))
 f:close()
