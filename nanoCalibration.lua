@@ -88,8 +88,10 @@ if not doCal then
     return
 end
 
-local results = {}
+print("Start Calibration ...")
+local results = {name=userName}
 for i = 1,18,1 do
+    print("#")
     if not changeInput(i,true) then return end
     local r = sendCommand("effects","getActiveEffects")
     if not r then print("Connection lost!") print("Wait until effect has been disabled again!") changeInput(i,false,true) return end
@@ -97,7 +99,8 @@ for i = 1,18,1 do
     if not changeInput(i,false) then return end
 end
 print("Calibration completed!")
-print("Save data to nanoInfos.txt")
-local f = fs.open("/home/nanoInfos.txt","w")
+print("Saving data to /home/nano"..userName..".txt")
+local f = io.open("/home/nano"..userName..".txt","w")
 f:write(ser.serialize(results))
 f:close()
+print("Saved")
