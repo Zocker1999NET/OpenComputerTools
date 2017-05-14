@@ -91,13 +91,14 @@ end
 print("Start Calibration ...")
 local results = {name=userName}
 for i = 1,18,1 do
-    print("#")
+    write("#")
     if not changeInput(i,true) then return end
     local r = sendCommand("effects","getActiveEffects")
     if not r then print("Connection lost!") print("Wait until effect has been disabled again!") changeInput(i,false,true) return end
     results[i] = r[1]
     if not changeInput(i,false) then return end
 end
+print()
 print("Calibration completed!")
 print("Saving data to /home/nano"..userName..".txt")
 local f = io.open("/home/nano"..userName..".txt","w")
