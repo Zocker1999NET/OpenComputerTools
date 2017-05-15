@@ -43,7 +43,7 @@ local function readFile(path)
 			error("Error while reading file ''"..path.."': "..reason,1)
 		end
 		buffer = buffer..data
-	until not d
+	until not data
 	file:close()
 	return buffer
 end
