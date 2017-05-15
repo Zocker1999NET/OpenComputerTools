@@ -37,7 +37,7 @@ local function readFile(path)
 		error("Error while opening file ''"..path.."': "..tostring(err),1)
 	end
 	local buffer = ""
-	for line in f:lines() do
+	for line in file:lines() do
 		buffer = buffer..line
 	end
 	file:close()
