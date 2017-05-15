@@ -45,7 +45,7 @@ local function readFile(path)
 end
 
 local config = ser.unserialize(readFile("/home/secDoors.cfg"))
-lookUpAddresses(config.main)
+lookUpAddresses(config.mainCom)
 for k,v in pairs(config.gpus) do
 	lookUpAddresses(v)
 end
