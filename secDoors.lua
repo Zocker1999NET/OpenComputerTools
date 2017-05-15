@@ -13,7 +13,7 @@ local function lookUpAddresses(tab)
 	for i = 1,n,1 do
 		local a = com.get(tab[tI[i]])
 		if not a then
-			error("Device starting with "..v.." not found!")
+			error("Device starting with "..tab[tI[i]].." not found!")
 		end
 		tab[tI[i]] = a
 	end
@@ -52,8 +52,6 @@ end
 for k,v in pairs(config.doors) do
 	lookUpAddresses(v)
 end
-print(ser.serialize(config))
-if true then return end
 
 for t,a in pairs(config.mainCom) do
 	com.setPrimary(t,com.get(a))
