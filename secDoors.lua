@@ -37,13 +37,9 @@ local function readFile(path)
 		error("Error while opening file ''"..path.."': "..tostring(err),1)
 	end
 	local buffer = ""
-	repeat
-		local data,reason = file:read(math.huge)
-		if not data and reason then
-			error("Error while reading file ''"..path.."': "..reason,1)
-		end
-		buffer = buffer..data
-	until not data
+	for line in f:lines() do
+		buffer = buffer..line
+	end
 	file:close()
 	return buffer
 end
