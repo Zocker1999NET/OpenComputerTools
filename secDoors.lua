@@ -45,7 +45,8 @@ print("Load config ...")
 local config = ser.unserialize(readFile("/home/secDoors.cfg"))
 local gpus = {}
 local lastGPU = 0
-local gpuCount = table.maxn(config.gpus)
+local gpuCount = 0
+local screens = {}
 lookUpAddresses(config.mainCom)
 lookUpAddresses(config.gpus)
 for k,v in pairs(config.doors) do
@@ -53,6 +54,7 @@ for k,v in pairs(config.doors) do
 end
 for k,v in pairs(config.gpus) do
 	gpus[k] = com.proxy(v)
+	gpuCount = gpuCount + 1
 end
 local indexChange = {"screen1","screen2","forAll1","forAll2","rsBlock","rsSide"}
 for _,t in pairs(config.doors) do
@@ -76,11 +78,11 @@ end
 
 print("Initialize screens ...")
 
-local function bindGPU(screen)
-	local gpu
-	for k,v in pairs(config.gpus) do
+local function drawScreen(screen,state)
+	local g
+	for k,v in pairs(gpus) do
 		if v.getScreen() == screen then
-			gpu = v
+			g = v
 			break
 		end
 	end
@@ -91,26 +93,17 @@ local function bindGPU(screen)
 		end
 		gpu = gpus[lastGPU]
 	end
-	gpu.bind(screen)
-	return gpu
-end
-
-local function setResolution(screen)
+	g.bind(screen)
 	local s = com.proxy(screen)
-	local g = bindGPU(screen)
-	s.turnOn()
+	if not s.isOn() then
+		s.turnOn()
+	end
 	local sx,sy = s.getAspectRatio()
 	if sx == 3 then
 		g.setResolution(38,5)
-	elseif
+	elseif sx == 1 then
 		g.setResolution(10,5)
 	end
-	return g.getResolution()
-end
-
-local function drawScreen(screen,state)
-	local sx,sy = setResolution(screen)
-	local g = bindGPU(screen)
 	local col = 0xE1E1E1
 	if state == 1 then
 		col = 0x006D00
@@ -119,7 +112,7 @@ local function drawScreen(screen,state)
 	end
 	g.setBackground(col)
 	g.fill(1,1,sx,sy," ")
-	g.setBackground()
+	g.setBackground( 0x878787)
 	for y = 1,sy,1 do
 		for x = (((y % 2) * 2) + 1),sx,4 do
 			g.fill(x,y,2,1," ")
