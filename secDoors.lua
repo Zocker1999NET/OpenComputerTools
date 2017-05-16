@@ -86,12 +86,12 @@ local function drawScreen(screen,state)
 			break
 		end
 	end
-	if not gpu then
+	if not g then
 		lastGPU = lastGPU + 1
 		if lastGPU > gpuCount then
 			lastGPU = 1
 		end
-		gpu = gpus[lastGPU]
+		g = gpus[lastGPU]
 	end
 	g.bind(screen)
 	local s = com.proxy(screen)
@@ -104,11 +104,12 @@ local function drawScreen(screen,state)
 	elseif sx == 1 then
 		g.setResolution(10,5)
 	end
+	sx,sy = g.getResolution()
 	local col = 0xE1E1E1
 	if state == 1 then
 		col = 0x006D00
 	elseif state == 2 then
-		col = 0xCC0000
+		col = 0xFF0000
 	end
 	g.setBackground(col)
 	g.fill(1,1,sx,sy," ")
