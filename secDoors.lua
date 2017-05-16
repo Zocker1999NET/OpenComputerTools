@@ -43,14 +43,18 @@ end
 
 print("Load config ...")
 local config = ser.unserialize(readFile("/home/secDoors.cfg"))
+local gpus = {}
+local lastGPU = 0
+local gpuCount = table.maxn(config.gpus)
 lookUpAddresses(config.mainCom)
-for k,v in pairs(config.gpus) do
-	lookUpAddresses(v)
-end
+lookUpAddresses(config.gpus)
 for k,v in pairs(config.doors) do
 	lookUpAddresses(v)
 end
-local indexChange = {"screen1","screen2","isForAll1","isForAll2","rsBlock","rsSide"}
+for k,v in pairs(config.gpus) do
+	gpus[k] = com.proxy(v)
+end
+local indexChange = {"screen1","screen2","forAll1","forAll2","rsBlock","rsSide"}
 for _,t in pairs(config.doors) do
 	for k,v in pairs(indexChange) do
 		t[v] = t[k]
@@ -59,9 +63,71 @@ end
 for t,a in pairs(config.mainCom) do
 	com.setPrimary(t,com.get(a))
 end
+for n,t in pairs(config.doors) do
+	screens[t.screen1] = n
+	screens[t.screen2] = n
+end
 
-print("Open all doors ...")
+print("Close all doors ...")
 for n,t in pairs(config.doors) do
 	print(" "..n)
-	changeOutput(t,true)
+	changeOutput(t,false)
+end
+
+print("Initialize screens ...")
+
+local function bindGPU(screen)
+	local gpu
+	for k,v in pairs(config.gpus) do
+		if v.getScreen() == screen then
+			gpu = v
+			break
+		end
+	end
+	if not gpu then
+		lastGPU = lastGPU + 1
+		if lastGPU > gpuCount then
+			lastGPU = 1
+		end
+		gpu = gpus[lastGPU]
+	end
+	gpu.bind(screen)
+	return gpu
+end
+
+local function setResolution(screen)
+	local s = com.proxy(screen)
+	local g = bindGPU(screen)
+	s.turnOn()
+	local sx,sy = s.getAspectRatio()
+	if sx == 3 then
+		g.setResolution(38,5)
+	elseif
+		g.setResolution(10,5)
+	end
+	return g.getResolution()
+end
+
+local function drawScreen(screen,state)
+	local sx,sy = setResolution(screen)
+	local g = bindGPU(screen)
+	local col = 0xE1E1E1
+	if state == 1 then
+		col = 0x006D00
+	elseif state == 2 then
+		col = 0xCC0000
+	end
+	g.setBackground(col)
+	g.fill(1,1,sx,sy," ")
+	g.setBackground()
+	for y = 1,sy,1 do
+		for x = (((y % 2) * 2) + 1),sx,4 do
+			g.fill(x,y,2,1," ")
+		end
+	end
+end
+
+for k,v in pairs(config.doors) do
+	drawScreen(v.screen1,0)
+	drawScreen(v.screen2,0)
 end
