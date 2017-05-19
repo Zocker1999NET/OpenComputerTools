@@ -80,7 +80,7 @@ local function tLF(a,b,c)
 		bI(a,"close",h)
 		return load(l,"=init")
 	elseif t=="modem" then
-
+		
 	end
 end
 local function rB(n)cls(3)local i=0
