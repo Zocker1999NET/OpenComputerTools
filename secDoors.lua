@@ -2,6 +2,7 @@ local math = require("math")
 local fs = require("filesystem")
 local ser = require("serialization")
 local com = require("component")
+local event = require("event")
 
 local function lookUpAddresses(tab)
 	local n = 0
@@ -20,11 +21,6 @@ local function lookUpAddresses(tab)
 			tab[tI[i]] = a
 		end
 	end
-end
-
-local function changeOutput(tab,out)
-	com.invoke(tab.rsBlock,"setOutput",tab.rsSide,(out and 15) or 0)
-	return true
 end
 
 local function readFile(path)
@@ -57,7 +53,8 @@ for k,v in pairs(config.gpus) do
 	gpuCount = gpuCount + 1
 end
 local indexChange = {"screen1","screen2","forAll1","forAll2","rsBlock","rsSide"}
-for _,t in pairs(config.doors) do
+for n,t in pairs(config.doors) do
+	t.name = n
 	for k,v in pairs(indexChange) do
 		t[v] = t[k]
 	end
@@ -71,6 +68,12 @@ for n,t in pairs(config.doors) do
 end
 
 print("Close all doors ...")
+
+local function changeOutput(tab,out)
+	com.invoke(tab.rsBlock,"setOutput",tab.rsSide,(out and 15) or 0)
+	return true
+end
+
 for n,t in pairs(config.doors) do
 	print(" "..n)
 	changeOutput(t,false)
@@ -105,10 +108,10 @@ local function drawScreen(screen,state)
 		g.setResolution(10,5)
 	end
 	sx,sy = g.getResolution()
-	local col = 0xE1E1E1
-	if state == 1 then
+	local col = 0xE1E1E1 -- Nothing
+	if state == 1 then -- Accepted
 		col = 0x006D00
-	elseif state == 2 then
+	elseif state == 2 then -- Rejected
 		col = 0xFF0000
 	end
 	g.setBackground(col)
@@ -125,3 +128,40 @@ for k,v in pairs(config.doors) do
 	drawScreen(v.screen1,0)
 	drawScreen(v.screen2,0)
 end
+
+print("Configure Background Service ...")
+
+local function eventCallback(...)
+	local eD = {...}
+	local door = screens[eD[2]]
+	if not door then
+		return
+	end
+	door = config.doors[door]
+	local forAll = ((door.screen1 == eD[2] and door.forAll1) or (door.screen2 == eD[2] and door.forAll2))
+	local allowed = forAll == true
+	if not allowed and eD[6] then
+		local pl = config.players[eD[6]]
+		if type(pl) == "table" then
+			allowed = pl[door.name] == true
+		elseif pl == true then
+			allowed = true
+		end
+	end
+	if allowed then
+		drawScreen(eD[2],1)
+		changeOutput(door,true)
+		event.timer(3, function()
+			drawScreen(eD[2],(forAll and 1) or 0)
+			changeOutput(door,false)
+		end)
+	else
+		drawScreen(eD[2],2)
+		event.timer(3, function()
+			drawScreen(eD[2],(forAll and 1) or 0)
+		end)
+	end
+end
+event.listen("touch",eventCallback)
+
+print("Everything is fine and working now.")
