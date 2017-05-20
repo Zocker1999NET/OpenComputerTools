@@ -9,8 +9,9 @@ local tU=table.unpack
 local cT=component.type
 local cL=component.list
 local cP=component.proxy
+local cI=component.invoke
 local function cID(dT)return cL(dT)()end
-function bI(...)local r={pcall(component.invoke,...)}if not r[1] then
+function bI(...)local r={pcall(cI,...)}if not r[1] then
 return nil,r[2]
 else
 return tU(r,2,r.n)end
