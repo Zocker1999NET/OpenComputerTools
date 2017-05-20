@@ -1,4 +1,4 @@
---15
+--16
 component=(component or require("component"))
 computer=(computer or require("computer"))
 local z="Lua Bios with NetBoot"
@@ -121,7 +121,7 @@ if g and cID("keyboard")then
 		local k={}
 		local l={}
 		for a in cL(n and "modem" or "filesystem")do
-			if n or bI(a,"exists","/init.lua")then i=i+1 k[i]=i+1 l[i+1]=a pr("("..i..") "..a..(n and (" "..bI(a,"getLabel")) or ""))end
+			if n or bI(a,"exists","/init.lua")then i=i+1 k[i]=i+1 l[i+1]=a pr("("..i..") "..a..((n and "") or " "..bI(a,"getLabel")))end
 		end
 		if i==0 then error("no bootable medium found",0)end
 		k=key(10,tU(k))
