@@ -13,7 +13,7 @@ local function cID(dT)return cL(dT)()end
 function bI(...)local r={pcall(component.invoke,...)}if not r[1] then
 return nil,r[2]
 else
-return tU(r,2,result.n)end
+return tU(r,2,r.n)end
 end
 local eR=cID("eeprom")bI(eR,"setLabel",z)local function gBA()local d=bI(eR,"getData")if d:len()==36 then
 return d:sub(1,36)elseif d:len()>36 then
