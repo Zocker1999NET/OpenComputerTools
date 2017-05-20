@@ -1,4 +1,4 @@
---14
+--15
 component=(component or require("component"))
 computer=(computer or require("computer"))
 local z="Lua Bios with NetBoot"
@@ -41,7 +41,8 @@ computer.setBootAddress=sBA
 local function wF(t,e,f,g,h)
 	t=t+uT()while 1 do
 		local d={pS(t-uT())}
-		if not d[1] then return elseif d[1]==e and d[4]==(f or d[4]) and d[5]==(g or d[5]) and d[3]==(h or d[3])then return d end
+		if not d[1] then return
+		elseif d[1]==e and d[4]==(f or d[4]) and d[5]==(g or d[5]) and d[3]==(h or d[3]) then return d end
 	end
 end
 local g
@@ -52,16 +53,16 @@ local function cl(s)s=s or 1 g.fill(1,s,50,16," ")y=s end
 local function key(t,...)local k={}
 	for _k,v in pairs({...})do k[v]=1 end
 	while 1 do
-		local e={wF(t,"key_down")}
-		if not e[1] then return elseif k[e[4]] then return e[4] end
+		local e=wF(t,"key_down")
+		if not e then return elseif k[e[4]] then return e[4] end
 	end
 end
 local function iS()
 	local z=y
 	local t=""
 	while 1 do
-		local e={wF(10,"key_down")}
-		if not e[1] then return else
+		local e=wF(10,"key_down")
+		if not e then return else
 			if e[3]==8 and t:len()>0 then t=t:sub(1,t:len()-1)elseif e[3]==13 then break elseif e[3]>31 then t=t..string.char(e[3])end
 			y=z
 			pr(">"..t..(" "):rep(49-t:len()))
