@@ -1,4 +1,4 @@
---13
+--14
 component=(component or require("component"))
 computer=(computer or require("computer"))
 local z="Lua Bios with NetBoot"
@@ -25,22 +25,22 @@ return d:sub(1,36),d:sub(38,p-1),d:sub(p+1)else
 return nil,"Data corrupted"
 end
 end
-local function sBA(d,pub,pr)if not d then
-d=""
+local function sBA(a,b,c)if not a then
+a=""
 end
-if not cT(d)then
+if not cT(a)then
 return false
 end
-if cT(d)=="modem" and pub and pr then
-d=d.."|"..tostring(pub).."|"..tostring(pr)end
-return (d and bI(eR,"setData",d))or false
+if cT(a)=="modem" and b and c then
+a=a.."|"..b.."|"..c end
+return (a and bI(eR,"setData",a))or false
 end
 computer.getBootAddress=gBA
 computer.setBootAddress=sBA
-local function wF(t,e,f)
+local function wF(t,e,f,g,h)
 	t=t+uT()while 1 do
 		local d={pS(t-uT())}
-		if not d[1] then return elseif d[1]==e and d[4]==(f or d[4])then return d end
+		if not d[1] then return elseif d[1]==e and d[4]==(f or d[4]) and d[5]==(g or d[5]) and d[3]==(h or d[3])then return d end
 	end
 end
 local g
@@ -85,10 +85,18 @@ local function tLF(a,b,c)
 		m.open(68)
 		m.broadcast(67,b)
 		local y="modem_message"
-		local d=wF(5,y,68)
-		
+		local d=wF(5,y,68,c)
+		if not d then m.close(68) return nil,"server not found" end
+		local r=d[3]
+		for i=1,d[6],1 do
+			m.send(r,68,c,i)
+			d=wF(5,y,68,c,r)
+			if not d then m.close(68) return nil,"connection lost" end
+			l=l..d[6]
+		end
+		m.close(68)
 	end
-	return (l~="" and load(l,"=init")) or nil
+	return (l~="" and load(l,"=init")) or nil,"device not found"
 end
 if g and cID("keyboard")then
 	cl()
@@ -129,7 +137,6 @@ end
 local i,r
 if gBA()then i,r=tLF(gBA())end
 if not i then
-	sBA()
 	for add in component.list("filesystem")do
 		local f,e=tLF(add)
 		if f then
@@ -140,5 +147,5 @@ if not i then
 	end
 end
 if not i then
-error("no bootable medium found"..(r and(": "..tostring(r))or""),0)end
+error("no bootable medium found"..(r and (": "..tostring(r)) or ""),0)end
 b(1000,.2)i()
