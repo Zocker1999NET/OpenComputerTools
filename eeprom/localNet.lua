@@ -1,4 +1,4 @@
---16
+--17
 component=(component or require("component"))
 computer=(computer or require("computer"))
 local z="Lua Bios with NetBoot"
@@ -130,7 +130,7 @@ if g and cID("keyboard")then
 		local c
 		if n then
 			cl(3)pr"Modem:"
-			pr(">"..a)pr"Request:"
+			pr(">"..l[k])pr"Request:"
 			b=iS()pr"Password:"
 			c=iS()end
 		sBA(l[k],b,c)
