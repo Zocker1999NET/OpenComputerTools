@@ -42,7 +42,7 @@ local function wF(t,e,f,g,h)
 	t=t+uT()while 1 do
 		local d={pS(t-uT())}
 		if not d[1] then return
-		elseif d[1]==e and d[4]==(f or d[4]) and d[5]==(g or d[5]) and d[3]==(h or d[3]) then return d end
+		elseif d[1]==e and d[4]==(f or d[4]) and d[6]==(g or d[6]) and d[3]==(h or d[3]) then return d end
 	end
 end
 local g
