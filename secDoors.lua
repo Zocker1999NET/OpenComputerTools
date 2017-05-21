@@ -164,4 +164,4 @@ local function eventCallback(...)
 end
 event.listen("touch",eventCallback)
 
-print("Everything is fine and working now.")
+print("System set up!")
