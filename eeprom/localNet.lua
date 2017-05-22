@@ -90,11 +90,11 @@ local function tLF(a,b,c)
 		local d=wF(5,y,68,c)
 		if not d then m.close(68) return nil,"server not found" end
 		local r=d[3]
-		for i=1,d[6],1 do
+		for i=1,d[7],1 do
 			m.send(r,68,c,i)
 			d=wF(5,y,68,c,r)
 			if not d then m.close(68) return nil,"connection lost" end
-			l=l..d[6]
+			l=l..d[7]
 		end
 		m.close(68)
 	end
