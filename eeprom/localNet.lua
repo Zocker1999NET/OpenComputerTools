@@ -100,40 +100,42 @@ local function tLF(a,b,c)
 	end
 	return (l~="" and load(l,"=init")) or nil,"device not found"
 end
-if g and cID("keyboard")then
+if g then
 	cl()
 	pr(z)
 	pr"by zocker1999net"
-	pr""
-	pr"[CTRL] for boot menu"
-	b(1000,.5)
-	if key(.5,29)then
-		cl()
-		pr"Which source do you like to boot from? (10sec)"
+	if cID("keyboard") then
 		pr""
-		pr"(1) Filesystem"
-		pr"(2) Network (67/68)"
-		local d=key(10,2,3)
-		if not d then return end
-		local n=d==3
-		cl(3)
-		local i=0
-		local k={}
-		local l={}
-		for a in cL(n and "modem" or "filesystem")do
-			if n or bI(a,"exists","/init.lua")then i=i+1 k[i]=i+1 l[i+1]=a pr("("..i..") "..a..((n and "") or " "..bI(a,"getLabel")))end
+		pr"[CTRL] for boot menu"
+		b(1000,.5)
+		if key(.5,29)then
+			cl()
+			pr"Which source do you like to boot from? (10sec)"
+			pr""
+			pr"(1) Filesystem"
+			pr"(2) Network (67/68)"
+			local d=key(10,2,3)
+			if not d then return end
+			local n=d==3
+			cl(3)
+			local i=0
+			local k={}
+			local l={}
+			for a in cL(n and "modem" or "filesystem")do
+				if n or bI(a,"exists","/init.lua")then i=i+1 k[i]=i+1 l[i+1]=a pr("("..i..") "..a..((n and "") or " "..bI(a,"getLabel")))end
+			end
+			if i==0 then error("no bootable medium found",0)end
+			k=key(10,tU(k))
+			if not k then return end
+			local b
+			local c
+			if n then
+				cl(3)pr"Modem:"
+				pr(">"..l[k])pr"Request:"
+				b=iS()pr"Password:"
+				c=iS()end
+			sBA(l[k],b,c)
 		end
-		if i==0 then error("no bootable medium found",0)end
-		k=key(10,tU(k))
-		if not k then return end
-		local b
-		local c
-		if n then
-			cl(3)pr"Modem:"
-			pr(">"..l[k])pr"Request:"
-			b=iS()pr"Password:"
-			c=iS()end
-		sBA(l[k],b,c)
 	end
 end
 local i,r
