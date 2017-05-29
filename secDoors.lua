@@ -60,8 +60,13 @@ for n,t in pairs(config.doors) do
 	end
 end
 for t,a in pairs(config.mainCom) do
-	com.setPrimary(t,com.get(a))
+	a = com.get(a)
+	if not a then
+		error("Component not found: "..tostring(config.mainCom[t]))
+	end
+	com.setPrimary(t,a)
 end
+com.gpu.bind(com.screen.address)
 for n,t in pairs(config.doors) do
 	screens[t.screen1] = n
 	screens[t.screen2] = n
