@@ -114,24 +114,25 @@ local function drawScreen(screen,state)
 	end
 	sx,sy = g.getResolution()
 	local col = 0xE1E1E1 -- Nothing
-	if state == 1 then -- Accepted
+	if state == -1 then
+		g.setBackground( 0x878787)
+		g.fill(1,1,sx,sy," ")
+	elseif state == 1 then -- Accepted
 		col = 0x006D00
 	elseif state == 2 then -- Rejected
 		col = 0xFF0000
 	end
 	g.setBackground(col)
-	g.fill(1,1,sx,sy," ")
-	g.setBackground( 0x878787)
 	for y = 1,sy,1 do
-		for x = (((y % 2) * 2) + 1),sx,4 do
+		for x = ((((y + 1) % 2) * 2) + 1),sx,4 do
 			g.fill(x,y,2,1," ")
 		end
 	end
 end
 
 for k,v in pairs(config.doors) do
-	drawScreen(v.screen1,0)
-	drawScreen(v.screen2,0)
+	drawScreen(v.screen1,-1)
+	drawScreen(v.screen2,-1)
 end
 
 print("Configure Background Service ...")
@@ -156,13 +157,13 @@ local function eventCallback(...)
 	if allowed then
 		drawScreen(eD[2],1)
 		changeOutput(door,true)
-		event.timer(3, function()
-			drawScreen(eD[2],(forAll and 1) or 0)
+		event.timer(1.5, function()
 			changeOutput(door,false)
+			drawScreen(eD[2],(forAll and 1) or 0)
 		end)
 	else
 		drawScreen(eD[2],2)
-		event.timer(3, function()
+		event.timer(1.5, function()
 			drawScreen(eD[2],(forAll and 1) or 0)
 		end)
 	end
