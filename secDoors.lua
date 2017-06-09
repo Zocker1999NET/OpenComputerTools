@@ -115,7 +115,7 @@ local function drawScreen(screen,state)
 	sx,sy = g.getResolution()
 	local col = 0xE1E1E1 -- Nothing
 	if state == -1 then
-		g.setBackground( 0x878787)
+		g.setBackground( 0x505050)
 		g.fill(1,1,sx,sy," ")
 	elseif state == 1 then -- Accepted
 		col = 0x006D00
